@@ -1,6 +1,65 @@
 <main>
+    
     <div class="container py-4">
         <h1>Projects</h1>
         <p class="text-muted">Browse our projects.</p>
+        <button class="btn btn-primary" id="createProjectBtn" type="button" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+            Create Project
+        </button>
+    </div>
+
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createProjectModalLabel">Create Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/project" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="projectName" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="projectName" name="name" placeholder="Enter project name" required>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="projectDescription" class="form-label">Project Description</label>
+                            <textarea class="form-control" id="projectDescription" name="description" rows="3" placeholder="Enter project description" required></textarea>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row ms-4" id="projectList">
+        {{#if projects}}
+            {{#each projects}}
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{name}}</h5>
+                            <hr>
+                            <p class="card-text" style="min-height: 100px;">{{description}}</p>
+                            <hr>
+                            <div class="d-flex gap-2 m-2">
+                                <a class="btn btn-info flex-fill" href="/projects/{{id}}">View</a>
+                                <a class="btn btn-warning flex-fill" href="/projects/{{id}}/edit">Edit</a>
+                                <form action="/projects/{{id}}/delete" method="post" onsubmit="return confirm('Delete this project?')" class="flex-fill m-0">
+                                    <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p>No projects available.</p>
+        {{/if}}
     </div>
 </main>
