@@ -1,4 +1,12 @@
 <main>
+    {{#if flash}}
+    <div class="container mt-3">
+        <div class="alert alert-{{flash.type}} alert-dismissible fade show" role="alert">
+            {{flash.message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {{/if}}
     
     <div class="container py-4">
         <h1>Projects</h1>
@@ -26,6 +34,25 @@
                             <label for="projectDescription" class="form-label">Project Description</label>
                             <textarea class="form-control" id="projectDescription" name="description" rows="3" placeholder="Enter project description" required></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="technology_id" class="form-label">Technology</label>
+                            <select class="form-select" id="technology_id" name="technology_id" required>
+                                <option value="" disabled selected>Select a technology</option>
+                                {{#each technologies}}
+                                <option value="{{id}}">{{software_name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="user_id" class="form-label">User</label>
+                            <select class="form-select" id="user_id" name="user_id" required>
+                                <option value="" disabled selected>Select a user</option>
+                                {{#each users}}
+                                <option value="{{id}}">{{username}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
                     </div>
                     <hr>
                     <div class="modal-footer">
@@ -42,10 +69,22 @@
             {{#each projects}}
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{name}}</h5>
+                        <div class="card-body mb-3">
+                            <h5 class="card-title">{{project_name}}</h5>
                             <hr>
                             <p class="card-text" style="min-height: 100px;">{{description}}</p>
+                            <hr>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item">
+                                    <i class="bi bi-cpu me-2"></i><strong>Technology:</strong> {{technology_name}}
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-person me-2"></i><strong>User:</strong> {{user_name}}
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-clock me-2"></i><strong>Created:</strong> {{created_at}}
+                                </li>
+                            </ul>
                             <hr>
                             <div class="d-flex gap-2 m-2">
                                 <a class="btn btn-info flex-fill" href="/projects/{{id}}">View</a>

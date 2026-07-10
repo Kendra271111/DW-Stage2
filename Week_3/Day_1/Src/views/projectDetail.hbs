@@ -2,9 +2,21 @@
     <a href="/project" class="btn btn-outline-secondary mb-3">&larr; Back to Projects</a>
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title">{{project.name}}</h3>
-            <hr>
-            <p class="card-text">{{project.description}}</p>
+        <h3 class="card-title">{{project.project_name}}</h3>
+        <hr>
+        <p class="card-text" style="min-height: 100px;">{{project.description}}</p>
+        <hr>
+        <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item">
+                <i class="bi bi-cpu me-2"></i><strong>Technology:</strong> {{project.technology_name}}
+            </li>
+            <li class="list-group-item">
+                <i class="bi bi-person me-2"></i><strong>User:</strong> {{project.user_name}}
+            </li>
+            <li class="list-group-item">
+                <i class="bi bi-clock me-2"></i><strong>Created:</strong> {{project.created_at}}
+            </li>
+        </ul>
         </div>
     </div>
 </div>
