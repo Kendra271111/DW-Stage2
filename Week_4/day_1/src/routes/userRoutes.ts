@@ -3,8 +3,8 @@ import { helloWorld, getProfile, getUserByName, createUser } from '../controller
 
 const router = Router();
 
-router.get('/hello', helloWorld);
-router.get('/profile/:name', getUserByName);
-router.post('/login', createUser);
+router.get('/', helloWorld);
+router.get('/', getUserByName);
+router.post('/', createUser);
 
 export default router;
