@@ -1,21 +1,22 @@
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction } from 'express';
 import prisma from '../libs/prisma';
 
-export const helloWorld = (req: Request, res: Response) => {
+export const helloWorld = (req: Request, res: Response, next: NextFunction) => {
     return res.json({
         message: 'Hello World'
     });
 }
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, point } = req.body;
 
         const newUser = await prisma.user.create({
             data: {
                 name: name,
                 email: email,
-                password: password
+                password: password, 
+                point: Number(point)
             },
         });
     
@@ -24,15 +25,11 @@ export const createUser = async (req: Request, res: Response) => {
             data: newUser,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to create user!',
-            error: error,
-        });
+       next(error);
     }
 };
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {search, minPrice, sortBy} = req.query;
         const page = Number(req.query.page) || 1;
@@ -71,39 +68,73 @@ export const getAllUsers = async (req: Request, res: Response) => {
             data: users,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to retrieve users!',
-            error: error,
-        });
+         next(error);
     }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
-        const product = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: Number(id),
             },
         });
     
-        if (!product) {
+        if (!user) {
             return res.status(404).json({
-                message: 'Product not found',
+                message: 'User not found',
             });
         }
 
         return res.status(200).json({
-            message: 'Product retrieved successfully',
-            data: product,
+            message: 'User retrieved successfully',
+            data: user,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to retrieve product!',
-            error: error,
-        });
+        next(error);
     }
 };
+
+export const transferPoint = async (req: Request, res: Response, next: NextFunction) => {
+    const { senderId, receiverId, amount } = req.body;
+
+    try {
+        const sender = await prisma.user.findUnique({ where: { id: Number(senderId) } });
+        const receiver = await prisma.user.findUnique({ where: { id: Number(receiverId) } });
+
+        if (!sender || !receiver) {
+            if(!sender){
+            return res.status(404).json({ message: 'Sender not found' });
+            } if(!receiver) {
+                return res.status(404).json({ message: 'Receiver not found' });
+            } else {
+                return res.status(404).json({ message: 'No ID was found' });
+            }
+        }
+
+         if (senderId === receiverId) {
+            return res.status(404).json({  message: 'Cannot be the on same user' });
+        }
+
+        if (sender!.point < Number(amount)) {
+            return res.status(400).json({ message: 'Insufficient points' });
+        }
+
+        await prisma.$transaction([
+            prisma.user.update({
+                where: { id: Number(senderId) },
+                data: { point: { decrement: Number(amount) } },
+            }),
+            prisma.user.update({
+                where: { id: Number(receiverId) },
+                data: { point: { increment: Number(amount) } },
+            }),
+        ]);
+
+        return res.status(200).json({ message: 'Point transferred successfully' });
+    } catch (error) {
+        next(error);
+    }
+}

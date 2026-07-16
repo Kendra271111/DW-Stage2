@@ -1,7 +1,7 @@
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction} from 'express';
 import prisma from '../libs/prisma';
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, description, price, stock, category, userId } = req.body;
 
@@ -21,15 +21,11 @@ export const createProduct = async (req: Request, res: Response) => {
             data: newProduct,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to create product!',
-            error: error,
-        });
+        next(error);
     }
 };
 
-export const getAllProducts = async (req: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {search, minPrice, sortBy} = req.query;
         const page = Number(req.query.page) || 1;
@@ -80,15 +76,11 @@ export const getAllProducts = async (req: Request, res: Response) => {
             data: products,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to retrieve products!',
-            error: error,
-        });
+        next(error);
     }
 };
 
-export const getProductById = async (req: Request, res: Response) => {
+export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
@@ -109,15 +101,11 @@ export const getProductById = async (req: Request, res: Response) => {
             data: product,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to retrieve product!',
-            error: error,
-        });
+        next(error);
     }
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const { name, description, price, stock, category } = req.body;
@@ -138,15 +126,11 @@ export const updateProduct = async (req: Request, res: Response) => {
             data: updatedProduct,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to update product!',
-            error: error,
-        });
+        next(error);
     }
 }
 
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
@@ -159,10 +143,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
             data: deletedProduct,
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: 'Failed to delete product!',
-            error: error,
-        });
+        next(error);
     }
 };
