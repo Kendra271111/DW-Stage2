@@ -15,6 +15,7 @@ model product {
   id Int @id @default(autoincrement())
   name  String
   description String?
+  image String?
   price Float
   stock Int @default(0)
   category category @default(Medium)
@@ -35,7 +36,9 @@ model user {
   name String
   email String @unique
   password String
+  pfp String?
   products product[]
+  role String @default("USER")
   point Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())

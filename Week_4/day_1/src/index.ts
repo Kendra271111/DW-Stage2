@@ -3,12 +3,14 @@ import mainRoute from './routes/index';
 import { logMiddleware } from './middlewares/logMiddleware'
 import { apiKeyMiddleware } from './middlewares/apiKeyMiddleware'
 import { ErrorHandler } from './middlewares/errorHandler'
+import { authent } from './middlewares/authMiddleware'
+import { authorizeRole } from './middlewares/authorizeRole'
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use('/api', apiKeyMiddleware, mainRoute);
+app.use('/api', mainRoute);
 app.use(ErrorHandler)
 
 app.get('/', (req: Request, res: Response) => {

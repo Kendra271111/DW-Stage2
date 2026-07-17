@@ -10,13 +10,14 @@ export const helloWorld = (req: Request, res: Response, next: NextFunction) => {
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, email, password, point } = req.body;
-
+        const pfp = req.file ? req.file.filename : null;
         const newUser = await prisma.user.create({
             data: {
                 name: name,
                 email: email,
                 password: password, 
-                point: Number(point)
+                point: Number(point),
+                pfp,
             },
         });
     
