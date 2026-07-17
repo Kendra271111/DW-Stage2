@@ -1,0 +1,63 @@
+PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+C:\DW\DW-Stage2\Week_4\day_1\src\controllers\authcontrollers.ts:13:43
+
+  10 const salt = await bcrypt.genSalt(10);
+  11 const hashedPassword = await bcrypt.hash(password, salt);
+  12        
+→ 13 const newUser = await prisma.user.create({
+       data: {
+         name: "Adidas",
+         password: "$2b$10$/P1qzlqyFy9BBRLPSltMzO9L23figo54OjIcWAcXKa.5RFgwiTkdu",
+         pfp: "pfp-1784302866435-296502230.2450091.jpg",
+     +   email: String
+       }
+     })
+
+Argument `email` is missing.
+    at throwValidationException (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:46:9)
+    at zr.handleRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:211:7)
+    at zr.handleAndLogRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:183:12)
+    at zr.request (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:152:12)
+    at a (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:963:24)
+    at register (C:\DW\DW-Stage2\Week_4\day_1\src\controllers\authcontrollers.ts:13:25)
+PrismaClientKnownRequestError: 
+Invalid `prisma.user.create()` invocation in
+C:\DW\DW-Stage2\Week_4\day_1\src\controllers\authcontrollers.ts:13:43
+
+  10 const salt = await bcrypt.genSalt(10);
+  11 const hashedPassword = await bcrypt.hash(password, salt);
+  12        
+→ 13 const newUser = await prisma.user.create(
+Unique constraint failed on the fields: (`email`)
+    at zr.handleRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:237:13)
+    at zr.handleAndLogRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:183:12)
+    at zr.request (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:152:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at a (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:963:24)
+    at register (C:\DW\DW-Stage2\Week_4\day_1\src\controllers\authcontrollers.ts:13:25)
+PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+C:\DW\DW-Stage2\Week_4\day_1\src\controllers\usercontrollers.ts:14:43
+
+  11 try {
+  12     const { name, email, password, point } = req.body;
+  13     const pfp = req.file ? req.file.filename : null;
+→ 14     const newUser = await prisma.user.create({
+           data: {
+             name: "Adidas",
+             password: undefined,
+             point: 100000,
+             pfp: null,
+         +   email: String
+           }
+         })
+
+Argument `email` is missing.
+    at throwValidationException (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:46:9)
+    at zr.handleRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:211:7)
+    at zr.handleAndLogRequestError (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:183:12)
+    at zr.request (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\RequestHandler.ts:152:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at a (C:\DW\DW-Stage2\Week_4\day_1\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:963:24)
+    at createUser (C:\DW\DW-Stage2\Week_4\day_1\src\controllers\usercontrollers.ts:14:25)
