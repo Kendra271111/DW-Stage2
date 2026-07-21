@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Button from '@mui/material/Button'
 
 type AddedButtonProps = {
   price: number
@@ -20,12 +19,15 @@ export default function AddedButton({ price, onAdd, onRemove }: AddedButtonProps
   }
 
   return (
-    <Button
-      variant="contained"
-      color={isAdded ? 'success' : 'primary'}
+    <button
       onClick={handleClick}
+      className={`w-full py-2 px-4 rounded font-medium transition-colors ${
+        isAdded
+          ? 'bg-green-600 text-white hover:bg-green-700'
+          : 'bg-blue-600 text-white hover:bg-blue-700'
+      }`}
     >
       {isAdded ? 'Added ✓' : 'Add'}
-    </Button>
+    </button>
   )
 }
