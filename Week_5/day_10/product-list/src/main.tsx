@@ -5,9 +5,9 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
-import Products from './pages/Products'
-import Cart from './pages/Cart'
-import ProductDetail from './pages/ProductDetail'
+import Products from './pages/Products.tsx'
+import Cart from './pages/Cart.tsx'
+import ProductDetail from './pages/ProductDetail.tsx'
 
 const theme = createTheme({
   palette: {

@@ -3,6 +3,7 @@ import ProductCard from './components/productCard'
 import { Container, Stack, Typography, Badge, Box, Button } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { Button as ShadcnButton } from '@/components/ui/button'
+import { Input as ShadcnInput } from '@/components/ui/input'
 
 const products = [
   { id: 1, name: 'Sample Product 1', price: 10000, image: 'Sample image 1' },
@@ -13,6 +14,7 @@ const products = [
 function App() {
   const [cartCount, setCartCount] = useState(0)
   const [totalPrice, setTotalPrice] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handleAddToCart = (price: number) => {
     setCartCount(prev => prev + 1)
@@ -31,6 +33,10 @@ function App() {
       {id: 3, title: "Cart"},
   ]
 
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <>
       <nav className="bg-gray-800 text-white px-6 py-4">
@@ -46,6 +52,17 @@ function App() {
                 </ShadcnButton>
               </Link>
             ))}
+          </div>
+          <div>
+            <ShadcnInput
+              id='ProductSearchBar'
+              name='ProductSearchBar'
+              type='text'
+              placeholder='Search products...'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className='w-48'
+            />
           </div>
         </div>
       </nav>
@@ -67,7 +84,7 @@ function App() {
           Total: {totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
         </Typography>
         <Stack direction="row" spacing={3} sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row' }}>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard 
               key={product.id} 
               {...product} 
