@@ -1,80 +1,77 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from  '@react-navigation/native-stack'
 
-interface Post {
-  id: string;
-  author: string;
-  content: string;
-  image: string;
+import HomeScreen from './src/screens/HomeScreen'
+import DetailScreen from './src/screens/DetailScreen';
+import StoreScreen from './src/screens/StoreScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import ProfileScreen from './src/screens/ProfileScreen';
+
+export type RootStackParamList = {
+  MainApp: undefined;
+  Detail: {id: number, name: string};
 }
 
-const DUMMY_POST: Post[] = Array.from({length: 5}).map((_, index) => ({
-  id: index.toString(),
-  author: `Pengguna ke-${index + 1}`,
-  content: `Konten ke-${index + 1}`,
-  image: `https://reactnative.dev/img/tiny_logo.png`
-}))
+export type RootTabParamList = {
+  HomeTab: undefined;
+  StoreTab: undefined;
+  ProfileTab: {id: number, name: string};
+}
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
+
+function BottomTabs() {
+  return(
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'home';
+
+          if (route.name === 'HomeTab') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'ProfileTab') {
+            iconName = focused ? 'person' : 'person-outline';
+          } else if(route.name === 'StoreTab') {
+            iconName = focused ? 'storefront' : 'storefront-outline';
+          }
+
+
+          return <Ionicons name={iconName} size={size} color={color} />
+        },
+        tabBarActiveTintColor: 'orange',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="HomeTab" component={HomeScreen} options={{title: 'Home'}}/>
+      <Tab.Screen name="StoreTab" component={StoreScreen} options={{title: 'Store'}}/>
+      <Tab.Screen name="ProfileTab" component={ProfileScreen} options={{title: 'Profile'}} initialParams={{id: 1, name: 'User'}}/>
+    </Tab.Navigator>
+  )
+}
 
 export default function App(){
 
-  const onPress = () => {
-    console.log('Button pressed');
-  };
-
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{backgroundColor: "grey"}}>
-        <FlatList
-          data={DUMMY_POST}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-          <View style={styles.card}>
-            <Text style={styles.author}>{item.author}</Text>
-            <Text>{item.content}</Text>
-            <Image
-              style={styles.image}
-              source={{uri: item.image}}
-              resizeMode="cover"
-            />
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-                <Text>Add</Text>
-            </TouchableOpacity>
-          </View>
-          )}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="MainApp">
+          <Stack.Screen name="MainApp" component={BottomTabs} options={{headerShown: false}}/>
+          <Stack.Screen 
+              name="Detail"
+              component={DetailScreen}
+              options={{
+                title: 'Product Information',
+                headerStyle: {
+                  backgroundColor: '#232F34'
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontWeight: 'bold'
+                }
+              }}
+              />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 0,
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: 16,
-    marginVertical: 16,
-    marginHorizontal: 16,
-    borderRadius: 8
-  },
-  author: {
-    fontWeight: 'bold',
-    fontSize: 32,
-    marginBottom: 8
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 12
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center'
-  }
-});
