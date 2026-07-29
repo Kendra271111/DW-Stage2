@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from  '@react-navigation/native-stack'
-
+import './global.css'
 import HomeScreen from './src/screens/HomeScreen'
 import DetailScreen from './src/screens/DetailScreen';
 import StoreScreen from './src/screens/StoreScreen';
@@ -9,14 +9,16 @@ import { Ionicons } from '@expo/vector-icons';
 import ProfileScreen from './src/screens/ProfileScreen';
 
 export type RootStackParamList = {
-  MainApp: undefined;
-  Detail: {id: number, name: string};
+  MainApp: undefined,
+  Detail: {id: number, name: string},
 }
 
 export type RootTabParamList = {
-  HomeTab: undefined;
-  StoreTab: undefined;
-  ProfileTab: {id: number, name: string};
+  HomeTab: undefined,
+  Analytics: undefined,
+  Activity: undefined,
+  StoreTab: undefined,
+  ProfileTab: {id: number, name: string},
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,21 +33,25 @@ function BottomTabs() {
 
           if (route.name === 'HomeTab') {
             iconName = focused ? 'home' : 'home-outline';
+          } else if(route.name === 'Analytics') {
+            iconName = focused ? 'analytics' : 'analytics-outline';
+          } else if (route.name === 'Activity') {
+            iconName = focused ? 'notifications-sharp' : 'notifications-outline';
           } else if (route.name === 'ProfileTab') {
             iconName = focused ? 'person' : 'person-outline';
-          } else if(route.name === 'StoreTab') {
-            iconName = focused ? 'storefront' : 'storefront-outline';
           }
 
 
           return <Ionicons name={iconName} size={size} color={color} />
         },
-        tabBarActiveTintColor: 'orange',
+        tabBarActiveTintColor: 'purple',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {backgroundColor: 'white'}
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{title: 'Home'}}/>
-      <Tab.Screen name="StoreTab" component={StoreScreen} options={{title: 'Store'}}/>
+      <Tab.Screen name="Analytics" component={StoreScreen} options={{title: 'Store'}}/>
+      <Tab.Screen name="Activity" component={StoreScreen} options={{title: 'Store'}}/>
       <Tab.Screen name="ProfileTab" component={ProfileScreen} options={{title: 'Profile'}} initialParams={{id: 1, name: 'User'}}/>
     </Tab.Navigator>
   )

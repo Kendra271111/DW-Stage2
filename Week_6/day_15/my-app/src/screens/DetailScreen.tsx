@@ -8,7 +8,7 @@ export default function DetailScreen({route, navigation}: Props){
     const {id, name} = route.params;
 
     return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View className="flex-1 items-center justify-center">
             <Text>Product ID: {id}</Text>
             <Text>Product Name: {name}</Text>
             <Button
