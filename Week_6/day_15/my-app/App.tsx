@@ -6,6 +6,7 @@ import DetailScreen from './src/screens/DetailScreen';
 import StoreScreen from './src/screens/StoreScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import {View, Text} from 'react-native'
@@ -15,6 +16,7 @@ import { createContext, useEffect, useMemo, useState } from 'react';
 
 export type RootStackParamList = {
   Login: undefined,
+  Register: undefined,
   MainApp: undefined,
   Detail: {id: number, name: string},
 }
@@ -108,7 +110,10 @@ export default function App(){
         ) : (
           <Stack.Navigator>
               {userToken == null ? (
+                <>
                 <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+                <Stack.Screen name="Register" component={RegisterScreen} options={{title: 'Register'}}/>
+                </>
               ): (
               <>
                 <Stack.Screen name="MainApp" component={BottomTabs} options={{headerShown: false}}/>

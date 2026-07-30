@@ -23,9 +23,11 @@ export default function LoginScreen({ navigation }: any){
             });
 
            signIn(response.data.token)
+           console.log("Login success")
         } catch (error: any) {
             const ErrorMsg = error.response?.data?.message || "Something is Wrong!"
             Alert.alert("Login Failed", ErrorMsg)
+            console.log("Login failed", error)
         }
     }
 
@@ -57,6 +59,13 @@ export default function LoginScreen({ navigation }: any){
                 className='bg-indigo-600 p-4 rounded-xl items-center'
             >
                 <Text className='text-white font-bold text-lg'>Masuk</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => navigation.navigate('Register')}
+                className='items-center mt-4'
+            >
+                <Text className='text-indigo-600'>Don't have account? Register.</Text>
             </TouchableOpacity>
         </View>
     )
