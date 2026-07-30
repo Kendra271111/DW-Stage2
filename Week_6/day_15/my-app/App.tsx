@@ -4,11 +4,17 @@ import './global.css'
 import HomeScreen from './src/screens/HomeScreen'
 import DetailScreen from './src/screens/DetailScreen';
 import StoreScreen from './src/screens/StoreScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ProfileScreen from './src/screens/ProfileScreen';
+import {View, Text} from 'react-native'
+import * as SecureStore from "expo-secure-store"
+import { createContext, useEffect, useMemo, useState } from 'react';
+
 
 export type RootStackParamList = {
+  Login: undefined,
   MainApp: undefined,
   Detail: {id: number, name: string},
 }
@@ -57,27 +63,74 @@ function BottomTabs() {
   )
 }
 
+export const AuthContext = createContext<any>(null);
+
 export default function App(){
+  const [userToken, setUserToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checktoken = async () => {
+      try{
+        const token = await SecureStore.getItemAsync('userToken');
+        setUserToken(token)
+      } catch (error) {
+        console.error("Failed to fetch token:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    checktoken()
+  }, [])
+
+  const signIn = async(token: string) => {
+    await SecureStore.setItemAsync('userToken', token);
+    setUserToken(token);
+  }
+
+  const signOut = async () => {
+    await SecureStore.deleteItemAsync('userToken');
+    setUserToken(null);
+  }
+
+  const authContext = useMemo(() => ({
+    signIn,
+    signOut
+  }), [])
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="MainApp">
-          <Stack.Screen name="MainApp" component={BottomTabs} options={{headerShown: false}}/>
-          <Stack.Screen 
-              name="Detail"
-              component={DetailScreen}
-              options={{
-                title: 'Product Information',
-                headerStyle: {
-                  backgroundColor: '#232F34'
-                },
-                headerTintColor: 'white',
-                headerTitleStyle: {
-                  fontWeight: 'bold'
-                }
-              }}
-              />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center">
+            <Text>Loading...</Text>
+          </View>
+        ) : (
+          <Stack.Navigator>
+              {userToken == null ? (
+                <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+              ): (
+              <>
+                <Stack.Screen name="MainApp" component={BottomTabs} options={{headerShown: false}}/>
+                 <Stack.Screen 
+                  name="Detail"
+                  component={DetailScreen}
+                  options={{
+                    title: 'Product Information',
+                    headerStyle: {
+                      backgroundColor: '#232F34'
+                    },
+                    headerTintColor: 'white',
+                    headerTitleStyle: {
+                      fontWeight: 'bold'
+                    }
+                  }}
+                  />
+              </>
+              )}
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
